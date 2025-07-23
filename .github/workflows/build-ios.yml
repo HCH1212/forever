@@ -33,7 +33,7 @@ jobs:
 
       - name: Build iOS App
         run: |
-          fyne package -os ios -appID online.hch1212.forever -icon leimu.png
+          fyne package -os ios -appID online.hch1212.forever -icon leimu.png --certificate ""
 
       - name: Upload iOS Build
         uses: actions/upload-artifact@v4
