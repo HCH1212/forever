@@ -1,0 +1,42 @@
+name: Build iOS Package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install Fyne CLI
+        run: go install fyne.io/fyne/v2/cmd/fyne@latest
+
+      - name: Ensure icon exists
+        run: |
+          if [ ! -f "leimu.png" ]; then
+            echo "Missing icon: leimu.png"
+            exit 1
+          fi
+
+      - name: Tidy dependencies
+        run: go mod tidy
+
+      - name: Build iOS App
+        run: |
+          fyne package -os ios -appID online.hch1212.forever -icon leimu.png
+
+      - name: Upload iOS Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/ios/*.app
